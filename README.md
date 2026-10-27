@@ -10,7 +10,7 @@ A Claude Code skill for writing Thai research and academic articles for TCI/Thai
 - **สัมภาษณ์ผู้เขียน** เก็บประเภทบทความ วารสารเป้าหมาย ข้อมูลวิจัย และข้อกำหนดของวารสาร
 - **ค้นแหล่งอ้างอิงจริง** อย่างน้อย 10 แหล่ง จาก TCI, OpenAlex, Crossref, DOAJ, ERIC, Europe PMC, Semantic Scholar, CORE, arXiv พร้อมยืนยัน DOI และบันทึกระดับการอ่าน (ฉบับเต็ม / บทคัดย่อ / บรรณานุกรม)
 - **2 โหมด** (1) วารสารสาย มจร ที่ต้องบูรณาการหลักพุทธธรรม (2) วารสารทั่วไป
-- **ภาษาไทยเชิงวิชาการ** ร่างจากโน้ตภาษาไทย (ไม่แปลจากประโยคอังกฤษ) และเกลาสำนวนผ่านสกิล [thai-humanizer](https://github.com/owh-hwo/thai-humanizer) (ต้องติดตั้งเพิ่ม) โดยไม่ให้ข้อเท็จจริง ตัวเลข หรือระดับความมั่นใจเปลี่ยน
+- **ภาษาไทยเชิงวิชาการ** ร่างจากโน้ตภาษาไทย (ไม่แปลจากประโยคอังกฤษ) และเกลาสำนวนผ่านสกิล [thai-humanizer](https://github.com/owh-hwo/thai-humanizer) (ติดตั้งมาพร้อมกันเมื่อติดตั้งแบบ plugin) โดยไม่ให้ข้อเท็จจริง ตัวเลข หรือระดับความมั่นใจเปลี่ยน
 - **จำลองผู้ทรงคุณวุฒิ** ให้ผู้ตรวจอิสระตรวจหลายรอบตามรายการบทเรียน (`references/review-lessons.md`) และทำตารางตอบผู้ทรงฯ
 - **สร้าง .docx** ตามรูปแบบวารสาร (ฟอนต์ ขนาด ส่วนหัว เลขหน้า ตาราง ภาพ ตัดคำไทย) และตรวจการอ้างอิงในเนื้อหากับรายการท้ายเรื่อง
 
@@ -64,6 +64,8 @@ pip install -r requirements.txt
 ตัวเลือกเสริม (ตัวแปรสภาพแวดล้อม): `CONTACT_EMAIL` หรือ `OPENALEX_MAILTO` สำหรับ polite pool ของ OpenAlex/Crossref, `OPENALEX_API_KEY`, `SEMANTIC_SCHOLAR_API_KEY`, `CORE_API_KEY`
 
 ## สกิลที่ต้องติดตั้งคู่กัน
+
+[thai-humanizer](https://github.com/owh-hwo/thai-humanizer) ติดตั้งให้อัตโนมัติเมื่อติดตั้ง research-article แบบ plugin (ประกาศเป็น `dependencies` ไว้แล้ว) ถ้าคัดลอกสกิลไปไว้ที่ `~/.claude/skills/` เอง ต้องติดตั้ง thai-humanizer แยก:
 
 ```
 /plugin marketplace add owh-hwo/thai-humanizer

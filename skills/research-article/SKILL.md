@@ -35,7 +35,7 @@ description: เขียนบทความวิจัยและบทค�
 ### สกิลคู่หู (ถ้าติดตั้งไว้)
 - `grill-me` — สัมภาษณ์ทีละคำถามพร้อมคำตอบแนะนำ (ขั้น 1) ถ้าไม่มี ให้ทำตามกติกาใน `interview.md` เอง
 - `diagram-design` — สร้างแผนภาพ HTML/SVG/PNG (ขั้น 7) ถ้าไม่มี ให้สร้าง SVG/HTML เองแล้วแปลงเป็น PNG
-- `thai-humanizer` (**จำเป็น** สำหรับขั้น 6, 8, 9; https://github.com/owh-hwo/thai-humanizer ติดตั้งด้วย `/plugin marketplace add owh-hwo/thai-humanizer` แล้ว `/plugin install thai-humanizer@thai-humanizer`) — แม่แบบย่อหน้าภาษาไทยวิชาการ (`references/thai-prose-patterns.md`) ร่องรอยภาษา AI/สำนวนแปล (`references/thai-humanizer.md`) สคริปต์นับร่องรอย (`scripts/thai_style_check.py`) และ Humanizer ภาษาอังกฤษรวมอยู่ด้วย ด้านล่างเรียกโฟลเดอร์ของสกิลนี้ว่า `<thai-humanizer-dir>` ถ้ายังไม่ได้ติดตั้ง ให้บอกผู้ใช้ก่อนเริ่มขั้น 6
+- `thai-humanizer` (**จำเป็น** สำหรับขั้น 6, 8, 9; https://github.com/owh-hwo/thai-humanizer ติดตั้งมาพร้อม research-article อัตโนมัติเมื่อติดตั้งแบบ plugin ถ้าไม่มี ให้ติดตั้งด้วย `/plugin marketplace add owh-hwo/thai-humanizer` แล้ว `/plugin install thai-humanizer@thai-humanizer`) — แม่แบบย่อหน้าภาษาไทยวิชาการ (`references/thai-prose-patterns.md`) ร่องรอยภาษา AI/สำนวนแปล (`references/thai-humanizer.md`) สคริปต์นับร่องรอย (`scripts/thai_style_check.py`) และ Humanizer ภาษาอังกฤษรวมอยู่ด้วย ด้านล่างเรียกโฟลเดอร์ของสกิลนี้ว่า `<thai-humanizer-dir>` ถ้ายังไม่ได้ติดตั้ง ให้บอกผู้ใช้ก่อนเริ่มขั้น 6
 - `docx` — แก้ไข .docx ขั้นสูงหรือเทเนื้อหาลง template ของวารสาร
 
 ## พื้นที่ทำงานของแต่ละบทความ
