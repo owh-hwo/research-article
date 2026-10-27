@@ -6,7 +6,9 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 
 - `skills/research-article/SKILL.md`: ขั้น 0-10 (โหมด → หัวข้อ → สัมภาษณ์ → เกณฑ์วารสาร → อ้างอิง → หลักธรรม → โครง → ร่าง → ภาพ → ปรับภาษา → ตรวจ → จำลองผู้ทรงฯ → .docx)
 - `skills/research-article/references/`: คู่มือแต่ละขั้น `review-lessons.md` (บทเรียนจากการตรวจ หมวด ก-ญ) แก้บ่อยที่สุด
-- `skills/research-article/scripts/`: `tci_search.py`, `academic_search.py`, `topic_scan.py`, `check_citations.py`, `build_docx.py` (Python 3.9+, `python-docx`; `pythainlp`, `pypdfium2` เสริม)
+- `skills/research-article/references/peer-review.md`: ขั้น 9.5 ฉบับเต็ม เลือกสาขาผู้ตรวจ คำสั่งแต่ละรอบ งานขนานหลายบทความ และตารางตอบ
+- `agents/`: `article-reviewer.md` (หนึ่งผู้ทรงฯ ต่อ subagent), `article-editor.md` (ด่านแรกและรวมผล) ใช้ Agent tool ของ Claude Code; ปลั๊กอินค้นพบโฟลเดอร์นี้ที่รากอัตโนมัติ
+- `skills/research-article/scripts/`: `tci_search.py`, `academic_search.py`, `topic_scan.py`, `check_citations.py`, `build_docx.py`, `check_linebreaks.py` (Python 3.9+, `python-docx`; ตัวตรวจคำตัดข้ามบรรทัดต้องมี `pythainlp`, `pypdfium2`)
 - `.claude-plugin/plugin.json`: ประกาศ `"dependencies": ["thai-humanizer"]`
 - `.claude-plugin/marketplace.json`: มีสองปลั๊กอิน คือ research-article (`./`) และ thai-humanizer (source แบบ `url` ชี้ `https://github.com/owh-hwo/thai-humanizer.git`)
 
@@ -31,7 +33,8 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 ## ตรวจก่อน push
 
 ```bash
-for s in skills/research-article/scripts/*.py; do python "$s" --help >/dev/null || echo "FAIL $s"; done
+for s in skills/research-article/scripts/*.py; do python -I "$s" --help >/dev/null || echo "FAIL $s"; done
+python -I skills/research-article/scripts/check_linebreaks.py --help
 python skills/research-article/scripts/check_citations.py ../บทความ/articles/<ชื่อ>/draft.md   # ลองกับ draft จริง
 claude plugin validate .
 ```

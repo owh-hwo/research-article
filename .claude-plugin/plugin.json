@@ -1,6 +1,6 @@
 {
   "name": "research-article",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Write Thai research and academic articles for TCI/ThaiJO journals: topic scan, real-reference search (TCI, OpenAlex, Crossref, DOAJ), Buddhist-principle mode for MCU journals, simulated peer review, Thai prose checks, and journal-formatted .docx output.",
   "author": {
     "name": "owh-hwo"
