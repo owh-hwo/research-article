@@ -17,8 +17,8 @@
     {
       "name": "thai-humanizer",
       "source": {
-        "source": "github",
-        "repo": "owh-hwo/thai-humanizer"
+        "source": "url",
+        "url": "https://github.com/owh-hwo/thai-humanizer.git"
       },
       "description": "Rewrite AI-sounding or translated-sounding Thai and English so it reads like the writer wrote it. Required by research-article.",
       "category": "writing"
