@@ -30,7 +30,7 @@
 
 - อ้างอิงจริง ≥ 10 รายการ ตรวจได้ บันทึกใน refs.json
 - ไม่สร้างข้อมูลวิจัย
-- humanizer + thai-humanizer
+- ผ่านสกิล thai-humanizer (เนื้อหาไทยและ Abstract อังกฤษ)
 - check_citations.py ผ่าน (ใช้ `--style apa7` ถ้าเป็นวารสาร APA 7)
 
 ## 4. หลักธรรมในโหมดทั่วไป

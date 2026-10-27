@@ -10,7 +10,7 @@ A Claude Code skill for writing Thai research and academic articles for TCI/Thai
 - **สัมภาษณ์ผู้เขียน** เก็บประเภทบทความ วารสารเป้าหมาย ข้อมูลวิจัย และข้อกำหนดของวารสาร
 - **ค้นแหล่งอ้างอิงจริง** อย่างน้อย 10 แหล่ง จาก TCI, OpenAlex, Crossref, DOAJ, ERIC, Europe PMC, Semantic Scholar, CORE, arXiv พร้อมยืนยัน DOI และบันทึกระดับการอ่าน (ฉบับเต็ม / บทคัดย่อ / บรรณานุกรม)
 - **2 โหมด** (1) วารสารสาย มจร ที่ต้องบูรณาการหลักพุทธธรรม (2) วารสารทั่วไป
-- **ภาษาไทยเชิงวิชาการ** ร่างจากโน้ตภาษาไทย (ไม่แปลจากประโยคอังกฤษ) ตามแม่แบบย่อหน้าใน `thai-prose-patterns.md` นับร่องรอยภาษา AI และสำนวนแปลด้วย `thai_style_check.py` แล้วให้ผู้ตรวจสำนวนที่ไม่เห็นต้นฉบับภาษาอังกฤษอ่านซ้ำ โดยไม่ให้ข้อเท็จจริง ตัวเลข หรือระดับความมั่นใจเปลี่ยน
+- **ภาษาไทยเชิงวิชาการ** ร่างจากโน้ตภาษาไทย (ไม่แปลจากประโยคอังกฤษ) และเกลาสำนวนผ่านสกิล [thai-humanizer](https://github.com/owh-hwo/thai-humanizer) (ต้องติดตั้งเพิ่ม) โดยไม่ให้ข้อเท็จจริง ตัวเลข หรือระดับความมั่นใจเปลี่ยน
 - **จำลองผู้ทรงคุณวุฒิ** ให้ผู้ตรวจอิสระตรวจหลายรอบตามรายการบทเรียน (`references/review-lessons.md`) และทำตารางตอบผู้ทรงฯ
 - **สร้าง .docx** ตามรูปแบบวารสาร (ฟอนต์ ขนาด ส่วนหัว เลขหน้า ตาราง ภาพ ตัดคำไทย) และตรวจการอ้างอิงในเนื้อหากับรายการท้ายเรื่อง
 
@@ -63,6 +63,15 @@ pip install -r requirements.txt
 
 ตัวเลือกเสริม (ตัวแปรสภาพแวดล้อม): `CONTACT_EMAIL` หรือ `OPENALEX_MAILTO` สำหรับ polite pool ของ OpenAlex/Crossref, `OPENALEX_API_KEY`, `SEMANTIC_SCHOLAR_API_KEY`, `CORE_API_KEY`
 
+## สกิลที่ต้องติดตั้งคู่กัน
+
+```
+/plugin marketplace add owh-hwo/thai-humanizer
+/plugin install thai-humanizer@thai-humanizer
+```
+
+ใช้ในขั้นร่าง ขั้นปรับภาษา และขั้นตรวจก่อนส่ง (แม่แบบย่อหน้าภาษาไทย ตัวนับร่องรอยภาษา AI และ Humanizer ภาษาอังกฤษ)
+
 ## การใช้งาน
 
 พิมพ์คำขอเป็นภาษาไทยได้เลย สกิลจะทำงานเมื่อพูดถึงการเขียนบทความหรือส่งวารสาร เช่น
@@ -82,7 +91,7 @@ pip install -r requirements.txt
 skills/research-article/
   SKILL.md               ขั้นตอนหลัก
   references/            คู่มืออ้างอิง APA, หลักธรรม, วารสาร, การค้น, สำนวนไทย, บทเรียนจากการตรวจ
-  scripts/               tci_search, academic_search, topic_scan, check_citations, thai_style_check, build_docx
+  scripts/               tci_search, academic_search, topic_scan, check_citations, build_docx
 ```
 
 ## ข้อจำกัด
