@@ -247,6 +247,7 @@ class Builder:
                     k, v = line.split(":", 1)
                     meta[k.strip()] = v.strip()
             text = text[end + 4:]
+        text = re.sub(r"\[/?ตัวบท\]", "", text)  # verbatim-law markers used by thai_style_check.py
         self.page_numbers()
         self.header(meta)
         breaks = [x.strip() for x in self.a.page_break_before.split("|") if x.strip()]
