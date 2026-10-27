@@ -81,7 +81,15 @@ class Builder:
         """Insert zero-width spaces between Thai words so Word can wrap lines without a Thai word-breaker."""
         if not self.tokenize or not THAI.search(text):
             return text
-        return "​".join(t for t in self.tokenize(text, keep_whitespace=True) if t)
+        out = []
+        for t in self.tokenize(text, keep_whitespace=True):
+            if not t:
+                continue
+            # no break opportunity right after an opening bracket, so "(" never ends a line
+            if out and not out[-1].endswith(("(", "[")):
+                out.append("​")
+            out.append(t)
+        return "".join(out)
 
     def run(self, p, text, size, bold=False, italic=False, sup=False):
         r = p.add_run(self.wordbreak(text))

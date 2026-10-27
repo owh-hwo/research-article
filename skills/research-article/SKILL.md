@@ -31,7 +31,7 @@ description: เขียนบทความวิจัยและบทค�
 | `scripts/tci_search.py` | ค้นบทความจากฐาน TCI ได้ข้อมูลบรรณานุกรมครบ |
 | `scripts/academic_search.py` | ค้น OpenAlex, Crossref, Semantic Scholar, DOAJ, Europe PMC, ERIC, arXiv, CORE และยืนยัน DOI |
 | `scripts/check_citations.py` | ตรวจจำนวนอ้างอิง ความสอดคล้องเนื้อหา-ท้ายเรื่อง การเรียงลำดับ คำสำคัญ บทคัดย่อ |
-| `scripts/check_linebreaks.py` | หลังสร้าง PDF ทุกครั้ง เทียบคำไทยที่ถูกตัดข้ามบรรทัดกับร่าง รับ PDF หลายไฟล์ |
+| `scripts/check_linebreaks.py` | หลังสร้าง PDF ทุกครั้ง เทียบคำไทยที่ถูกตัดข้ามบรรทัดกับร่าง และหาวงเล็บเปิดค้างท้ายบรรทัด รับ PDF หลายไฟล์ |
 | `scripts/build_docx.py` | แปลง draft.md เป็น .docx ตามรูปแบบวารสาร |
 
 สคริปต์ต้องใช้ Python 3.9+ กับ `python-docx` (ติดตั้ง `pip install python-docx`; `pythainlp` ถ้าต้องการนับคำบทคัดย่อภาษาไทย)

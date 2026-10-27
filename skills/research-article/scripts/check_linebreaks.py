@@ -71,6 +71,10 @@ def find_breaks(lines, flat, interiors):
     for line_number, (left, right) in enumerate(zip(lines, lines[1:]), 1):
         left = left.translate(INVISIBLE).rstrip()
         right = right.translate(INVISIBLE).lstrip()
+        # วงเล็บเปิดค้างท้ายบรรทัด ข้อความในวงเล็บไปขึ้นบรรทัดใหม่ (มักเกิดกับการอ้างอิงหรือคำย่อคัมภีร์)
+        if left.endswith(("(", "[")) and right:
+            yield line_number, left[-24:] + " / " + right[:24], ["วงเล็บเปิดค้างท้ายบรรทัด"], False
+            continue
         tail = THAI_END.search(left)
         head = THAI_START.match(right)
         if not tail or not head:
@@ -127,7 +131,7 @@ def main(argv=None):
     if hasattr(sys.stderr, "reconfigure"):
         sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(
-        description="หาคำไทยที่อาจถูกตัดข้ามบรรทัดใน PDF โดยเทียบขอบคำจากร่าง",
+        description="หาคำไทยที่อาจถูกตัดข้ามบรรทัดใน PDF โดยเทียบขอบคำจากร่าง และวงเล็บเปิดที่ค้างท้ายบรรทัด",
         epilog="ต้องมี pythainlp และ pypdfium2; รหัสออก 0 = ไม่พบ, 1 = พบจุดต้องตรวจ, "
         "2 = ตรวจไม่ครบ/ข้อผิดพลาด (มีลำดับก่อน 1) ผลไม่พบยังต้องตรวจภาพ PDF จริง",
         add_help=False,
@@ -164,7 +168,8 @@ def main(argv=None):
         found = found or bool(hits)
         for page, line, context, words, ambiguous in hits:
             note = " (บริบทซ้ำมีขอบคำต่างกัน ต้องยืนยันด้วยตา)" if ambiguous else ""
-            print(f"  หน้า {page} บรรทัดสกัด {line}: {context} — คำในร่าง: {', '.join(words)}{note}")
+            label = "ประเภท" if words == ["วงเล็บเปิดค้างท้ายบรรทัด"] else "คำในร่าง"
+            print(f"  หน้า {page} บรรทัดสกัด {line}: {context} — {label}: {', '.join(words)}{note}")
         if unreadable:
             print("  ตรวจไม่ได้ในหน้าที่ไม่มีข้อความสกัด: " + ", ".join(map(str, unreadable)))
             incomplete = True
