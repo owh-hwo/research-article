@@ -85,8 +85,9 @@ class Builder:
         for t in self.tokenize(text, keep_whitespace=True):
             if not t:
                 continue
-            # no break opportunity right after an opening bracket, so "(" never ends a line
-            if out and not out[-1].endswith(("(", "[")):
+            # break only between two Thai words: never inside URLs, Latin terms or numbers,
+            # never next to a space/word joiner/NBSP, and never right after "(" or "["
+            if out and THAI.match(out[-1][-1]) and THAI.match(t[0]):
                 out.append("​")
             out.append(t)
         return "".join(out)
