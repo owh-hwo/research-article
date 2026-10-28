@@ -46,6 +46,8 @@ class Builder:
                 if a.thai_wordbreak == "on":
                     sys.exit("--thai-wordbreak on needs: pip install pythainlp")
                 print("NOTE pythainlp not installed: Thai lines may wrap only at spaces in Word", file=sys.stderr)
+        # strings that must never wrap internally (e.g. a scripture abbreviation): spaces -> NBSP, no breaks inside
+        self.keep = [k for k in (a.keep_together or "").split("|") if k.strip()]
         self.doc = Document()
         sec = self.doc.sections[0]
         sec.page_width, sec.page_height = Cm(21), Cm(29.7)
@@ -79,18 +81,28 @@ class Builder:
 
     def wordbreak(self, text):
         """Insert zero-width spaces between Thai words so Word can wrap lines without a Thai word-breaker."""
-        if not self.tokenize or not THAI.search(text):
-            return text
-        out = []
-        for t in self.tokenize(text, keep_whitespace=True):
-            if not t:
-                continue
-            # break only between two Thai words: never inside URLs, Latin terms or numbers,
-            # never next to a space/word joiner/NBSP, and never right after "(" or "["
-            if out and THAI.match(out[-1][-1]) and THAI.match(t[0]):
-                out.append("​")
-            out.append(t)
-        return "".join(out)
+        holders = {}
+        for n, k in enumerate(self.keep):
+            if k in text:
+                ph = chr(0xE000 + n)  # private-use placeholder: not Thai, so no break is inserted around it
+                # no zero-width spaces inside (the placeholder is not Thai), NBSP for spaces, word joiner before
+                # each "." so Word cannot break after an abbreviation point; combining marks stay attached
+                holders[ph] = re.sub(r"\.", "⁠.", k.replace(" ", " "))
+                text = text.replace(k, ph)
+        if self.tokenize and THAI.search(text):
+            out = []
+            for t in self.tokenize(text, keep_whitespace=True):
+                if not t:
+                    continue
+                # break only between two Thai words: never inside URLs, Latin terms or numbers,
+                # never next to a space/word joiner/NBSP, and never right after "(" or "["
+                if out and THAI.match(out[-1][-1]) and THAI.match(t[0]):
+                    out.append("​")
+                out.append(t)
+            text = "".join(out)
+        for ph, kept in holders.items():
+            text = text.replace(ph, kept)
+        return text
 
     def run(self, p, text, size, bold=False, italic=False, sup=False):
         r = p.add_run(self.wordbreak(text))
@@ -182,7 +194,7 @@ class Builder:
             self.run(self.para(C), meta["title_en"].upper() if a.title_en_upper else meta["title_en"], a.title_en_size, bold=True)
         for key in ("authors_th", "authors_en"):
             if meta.get(key):
-                self.marked(self.para(C), meta[key], 14)
+                self.marked(self.para(C), meta[key], a.author_size, bold=a.author_bold)
         for key in ("affiliations_th", "affiliations_en"):
             for line in filter(None, (x.strip() for x in meta.get(key, "").split("|"))):
                 self.marked(self.para(C), line, 14)
@@ -190,14 +202,14 @@ class Builder:
             p = self.para(C)
             self.run(p, "*", 14, sup=True)
             self.run(p, f"Corresponding Author E-mail: {meta['email']}", 14)
-        if a.profile == "mcu":
+        if a.profile == "mcu" and a.received:
             self.run(self.para(C), meta.get("received", "Received……; Revised……; Accepted……"), 14)
 
     def image(self, caption, path, base):
         full = os.path.join(base, path)
         p = self.para(WD_ALIGN_PARAGRAPH.CENTER)
         if os.path.exists(full):
-            p.add_run().add_picture(full, width=Inches(6))
+            p.add_run().add_picture(full, width=Inches(self.a.figure_width_in))
             p.paragraph_format.keep_with_next = True
         else:
             self.run(p, f"[ไม่พบไฟล์ภาพ: {path}]", self.a.body_size)
@@ -313,7 +325,8 @@ class Builder:
                 self.run(p, km.group(1) + ": ", size, bold=True)
                 self.run(p, km.group(2), size)
             elif s.startswith("ที่มา:") or s.startswith("Source:"):
-                self.rich(self.para(WD_ALIGN_PARAGRAPH.LEFT if self.a.caption_align == "left" else WD_ALIGN_PARAGRAPH.CENTER), s, size)
+                src_align = {"left": WD_ALIGN_PARAGRAPH.LEFT, "center": WD_ALIGN_PARAGRAPH.CENTER, "thai": "thai"}[self.a.source_align or self.a.caption_align]
+                self.rich(self.para(src_align), s, size)
             elif re.match(r"^(ตารางที่|Table)\s*\d+", s):
                 p = self.para(WD_ALIGN_PARAGRAPH.LEFT)
                 p.paragraph_format.keep_with_next = True
@@ -325,8 +338,46 @@ class Builder:
             else:
                 align = {"thai": "thai", "justify": WD_ALIGN_PARAGRAPH.JUSTIFY, "left": WD_ALIGN_PARAGRAPH.LEFT}[self.a.align]
                 self.rich(self.para(align, indent=True), s, size)
+        if self.a.fit_tables:
+            for n, t in enumerate(self.doc.tables, 1):
+                chars, widths = fit_table(t, self.a.fit_total_cm, self.a.fit_power, self.a.fit_min_cm)
+                print(f"table {n}: chars {chars} -> cm {[round(w, 2) for w in widths]}")
         self.doc.save(out_path)
         print(f"saved {out_path}")
+
+
+def fit_table(table, total_cm, power, min_cm):
+    """Column widths in proportion to text volume (chars**power), so a short-label column stops wasting
+    space next to a long-notes column; narrow columns are raised to min_cm (keeps Thai words from wrapping
+    letter by letter). Only width properties change; runs and images are untouched."""
+    ncol = len(table.columns)
+    chars = [0] * ncol
+    for row in table.rows:
+        for j, cell in enumerate(row.cells[:ncol]):
+            chars[j] += len(cell.text.replace("​", ""))
+    weights = [max(c, 1) ** power for c in chars]
+    widths = [total_cm * w / sum(weights) for w in weights]
+    short = [j for j in range(ncol) if widths[j] < min_cm]
+    if short and len(short) < ncol:
+        need = sum(min_cm - widths[j] for j in short)
+        rest = [j for j in range(ncol) if j not in short]
+        restw = sum(widths[j] for j in rest)
+        for j in short:
+            widths[j] = min_cm
+        for j in rest:
+            widths[j] -= need * widths[j] / restw
+    tblPr = table._tbl.tblPr
+    layout = tblPr.find(qn("w:tblLayout"))
+    if layout is None:
+        layout = OxmlElement("w:tblLayout")
+        tblPr.append(layout)
+    layout.set(qn("w:type"), "fixed")
+    for j, gc in enumerate(table._tbl.tblGrid.findall(qn("w:gridCol"))):
+        gc.set(qn("w:w"), str(int(Cm(widths[j]).twips)))
+    for row in table.rows:
+        for j, cell in enumerate(row.cells[:ncol]):
+            cell.width = Cm(widths[j])
+    return chars, widths
 
 
 def main():
@@ -356,8 +407,20 @@ def main():
     p.add_argument("--thai-wordbreak", choices=["auto", "on", "off"], default="auto",
                    help="insert zero-width spaces between Thai words (needs pythainlp) so Word wraps Thai text cleanly")
     p.add_argument("--thai-dict", help="UTF-8 file, one Thai word per line, kept unbroken when wrapping (adds to the built-in list)")
+    p.add_argument("--keep-together", default="", help="'|'-separated strings that must never wrap internally, e.g. a scripture abbreviation 'องฺ.อฏฺฐก. (ไทย)'")
+    p.add_argument("--author-size", type=float, default=14, help="author line size in the centred (mcu) header (default 14)")
+    p.add_argument("--author-bold", choices=["yes", "no"], default="no")
+    p.add_argument("--received", choices=["yes", "no"], default="yes", help="mcu: print the 'Received; Revised; Accepted' line (no when the template lacks it)")
+    p.add_argument("--figure-width-in", type=float, default=6.0, help="figure width in inches (default 6; smaller when the page count is tight)")
+    p.add_argument("--source-align", choices=["left", "center", "thai"], help="alignment of 'ที่มา:' lines (default: same as --caption-align; thai = Thai distributed for long source lines)")
+    p.add_argument("--fit-tables", action="store_true", help="column widths in proportion to text volume instead of equal widths")
+    p.add_argument("--fit-min-cm", type=float, default=1.6, help="minimum column width with --fit-tables (2.4 keeps Thai words from wrapping letter by letter)")
+    p.add_argument("--fit-total-cm", type=float, default=15.9, help="total table width with --fit-tables (A4, 1-inch margins = 15.9)")
+    p.add_argument("--fit-power", type=float, default=0.6, help="width ∝ chars**power with --fit-tables (1 = proportional, 0 = equal)")
     a = p.parse_args()
     a.title_en_upper = a.title_en_upper == "yes"
+    a.author_bold = a.author_bold == "yes"
+    a.received = a.received == "yes"
     if a.title_en_size is None:
         a.title_en_size = a.title_size - 2
     Builder(a).build(a.draft, a.out)

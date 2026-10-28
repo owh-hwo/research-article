@@ -9,14 +9,17 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 | ขั้นตอน | `skills/research-article/SKILL.md` | ขั้น 0-10 (โหมด → หัวข้อ → สัมภาษณ์ → เกณฑ์วารสาร → อ้างอิง → หลักธรรม → โครง → ร่าง → ภาพ → ปรับภาษา → ตรวจ → 9.5 จำลองผู้ทรงฯ → 10 .docx) |
 | คู่มือ | `skills/research-article/references/` | `review-lessons.md` บทเรียนจากการตรวจ หมวด ก-ญ (แก้บ่อยที่สุด); `peer-review.md` ขั้น 9.5 ฉบับเต็ม: บทบาท ไฟล์ร่วมของรอบ คำสั่งรอบ 1/N การเรียกขนานหลายบทความ ตารางตอบ cross-review (ผู้ทรงฯ พิจารณารายงานของผู้ตรวจอีกระบบ แล้ว editor เลือกถ้อยคำสุดท้าย) เกณฑ์หยุด |
 | ผู้ตรวจ | `agents/article-reviewer.md`, `agents/article-editor.md` | subagent ของ Claude Code (หนึ่งผู้ทรงฯ ต่อ subagent; editor = ด่านแรก/ตรวจ PDF/รวมผล/รวมผล cross-review) tools: Read, Grep, Glob, Bash (`python -I` อ่าน PDF), Write (เฉพาะรายงานของตน) ปลั๊กอินค้นพบ `agents/` ที่รากอัตโนมัติ |
-| สคริปต์ | `skills/research-article/scripts/` | `tci_search.py`, `academic_search.py`, `topic_scan.py`, `check_citations.py`, `check_claims.py`, `build_docx.py`, `check_linebreaks.py` (Python 3.9+, `python-docx`; `pythainlp` + `pypdfium2` สำหรับตัดคำ/ตรวจ PDF) |
-| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.4.0**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
+| สคริปต์ | `skills/research-article/scripts/` | `tci_search.py`, `academic_search.py`, `topic_scan.py`, `check_citations.py`, `check_claims.py`, `check_terms.py`, `check_reflist.py`, `check_response.py`, `make_refs_log.py`, `make_reflist.py`, `build_docx.py`, `check_linebreaks.py` (Python 3.9+, `python-docx`; `pythainlp` + `pypdfium2` สำหรับตัดคำ/ตรวจ PDF) |
+| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.5.0**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
 
 พฤติกรรมสคริปต์ที่ต้องรักษา:
 - `build_docx.py --thai-wordbreak` แทรก zero-width space **เฉพาะระหว่างโทเค็นที่ท้ายตัวหน้าและต้นตัวหลังเป็นอักษรไทยทั้งคู่** (ไม่ตัดใน URL คำละติน ตัวเลข ไม่ติดช่องว่าง/word joiner/NBSP และไม่ให้ "(" ค้างท้ายบรรทัด) ทดสอบแล้วจำนวนหน้าบทความเดิมไม่เปลี่ยน
 - `check_linebreaks.py` รายงานคำไทยที่ถูกตัดกลางคำ (เทียบขอบคำจากร่าง รวมกรณีท้ายคำเป็นคำอื่น เช่น "เส / นอก") และวงเล็บเปิดค้างท้ายบรรทัด; exit 0/1/2
 - `build_docx.py` ถือว่าย่อหน้าที่ขึ้นต้นด้วย "ตารางที่ N"/"Table N" เป็นชื่อตาราง (ประโยคนำตารางในเนื้อหาจึงกลายเป็นป้ายซ้อน) ยังไม่ได้แก้ บันทึกเป็นบทเรียนใน `review-lessons.md` หมวด ฌ ถ้าแก้ ให้นับเป็นชื่อตารางเฉพาะบรรทัดที่ติดก่อนตาราง
 - `check_claims.py` เทียบร่างกับ `read`/`key_point`/`cite_scope`/`fulltext` ใน refs.json เป็นตัวชี้จุด (WARN/INFO) ไม่ใช่คำตัดสิน ย่อหน้า = หนึ่งบรรทัด (เลข บ. ตรงกับที่ผู้ตรวจใช้) ตัวเลขผูกกับการอ้างที่ใกล้ที่สุดในบรรทัด ค่าประมาณความยาวสอบเทียบจากบทความจริงสองเรื่อง (2,100 อักขระ/หน้า) ทดสอบกับ draft จริงทั้งสองเรื่องก่อน push
+- `build_docx.py` v1.5: `--fit-tables` (ย้ายจากสคริปต์ต่อบทความ ผลกริดตารางเท่าเดิม), `--keep-together` (NBSP แทนช่องว่าง + word joiner หน้าจุด ไม่แทรกระหว่างอักขระเพราะทำให้เครื่องหมายผสมหลุด), `--author-size/--author-bold/--received/--figure-width-in/--source-align` แทน postfix ต่อบทความ ทดสอบแล้วจำนวนหน้าเท่าไฟล์ส่งของบทความทั้งสอง
+- `make_reflist.py` แทนสคริปต์สร้างรายการอ้างอิงต่อบทความ ผลตรงกับรายการที่ส่งจริง ยกเว้นจุดที่ refs.json ขาดข้อมูล (`publisher_*`, `url_in_ref`) ผู้แต่งนิติบุคคลตัดสินด้วย `is_corporate` (คำบอกองค์กร/ตัวพิมพ์ใหญ่/>3 คำ) ถ้าผิดให้ใส่ `cite_en_override`; ลำดับไทยใช้ `pythainlp.util.collate` (พยัญชนะมาก่อนสระ: พฤ ก่อน พิ)
+- `make_refs_log.py` อนุมานคำค้นจากชื่อไฟล์ ไม่เขียนทับ `refs-log.md` ที่มีอยู่ (เขียน `.generated.md`) ยอดระเบียนตรงกับที่นับมือในบทความเดิม
 - `check_citations.py` จับคู่ "และคณะ" ในเนื้อหากับรายการท้ายเรื่องที่ลงชื่อผู้แต่งครบไม่ได้ (ERROR เท็จ) ยังไม่ได้แก้
 
 ## thai-humanizer (สกิลคู่หู แยก repo)
