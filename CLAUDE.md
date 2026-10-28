@@ -20,7 +20,7 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 | สคริปต์ค้น | `tci_search.py`, `academic_search.py`, `topic_scan.py` | ผลค้นเขียนเป็น JSON ชื่อไฟล์บอกคำค้น (`tci_<คำ>_<คำ>.json`, `tci_abs_…` = ค้นบทคัดย่อ) เพราะ `make_refs_log.py` อนุมานคำค้นจากชื่อไฟล์ |
 | สคริปต์สร้าง | `make_refs_log.py`, `make_reflist.py`, `build_docx.py` | refs-log จากไฟล์ผลค้น; รายการอ้างอิงจาก refs.json (`th-apa`/`en-apa`); .docx รวมตัวเลือกที่เคยเป็นสคริปต์แก้ไฟล์ต่อบทความ |
 | สคริปต์ตรวจ | `check_citations.py`, `check_claims.py`, `check_terms.py`, `check_reflist.py`, `check_response.py`, `check_linebreaks.py` | ทุกตัวเป็นตัวชี้จุด (WARN/INFO, exit 0/1/2) ไม่ใช่คำตัดสิน ผลว่างไม่รับรองว่าถูก |
-| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.5.1**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
+| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.5.2**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
 
 สคริปต์ใช้ Python 3.9+ กับ `python-docx`; `pythainlp` สำหรับตัดคำ/เรียงไทย; `pypdfium2` สำหรับอ่าน PDF
 
