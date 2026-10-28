@@ -187,7 +187,8 @@ authors_th: ชื่อ นามสกุล1*, ชื่อ นามสก�
 authors_en: Name Surname1*, Name Surname2
 affiliations_th: 1คณะ... มหาวิทยาลัย... | 2...
 affiliations_en: 1Faculty of ..., ... University | 2...
-email: <อีเมลผู้ติดต่อ>
+email: <อีเมลผู้ติดต่อ>            # พิมพ์เป็น "*Corresponding Author E-mail: …" (ตัวเลขท้ายชื่อ/สังกัดกลายเป็นตัวยก)
+email_line: E-mail1: a@x.ac.th E-mail2: b@y.ac.th   # ใช้แทน email เมื่อแม่แบบวารสารกำหนดบรรทัดอีเมลรูปแบบอื่น พิมพ์ตามตัวอักษร
 ---
 
 # บทคัดย่อ

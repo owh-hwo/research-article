@@ -20,7 +20,7 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 | สคริปต์ค้น | `tci_search.py`, `academic_search.py`, `topic_scan.py` | ผลค้นเขียนเป็น JSON ชื่อไฟล์บอกคำค้น (`tci_<คำ>_<คำ>.json`, `tci_abs_…` = ค้นบทคัดย่อ) เพราะ `make_refs_log.py` อนุมานคำค้นจากชื่อไฟล์ |
 | สคริปต์สร้าง | `make_refs_log.py`, `make_reflist.py`, `build_docx.py` | refs-log จากไฟล์ผลค้น; รายการอ้างอิงจาก refs.json (`th-apa`/`en-apa`); .docx รวมตัวเลือกที่เคยเป็นสคริปต์แก้ไฟล์ต่อบทความ |
 | สคริปต์ตรวจ | `check_citations.py`, `check_claims.py`, `check_terms.py`, `check_reflist.py`, `check_response.py`, `check_linebreaks.py` | ทุกตัวเป็นตัวชี้จุด (WARN/INFO, exit 0/1/2) ไม่ใช่คำตัดสิน ผลว่างไม่รับรองว่าถูก |
-| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.5.0**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
+| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.5.1**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
 
 สคริปต์ใช้ Python 3.9+ กับ `python-docx`; `pythainlp` สำหรับตัดคำ/เรียงไทย; `pypdfium2` สำหรับอ่าน PDF
 
@@ -30,6 +30,7 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 - `--thai-wordbreak` แทรก zero-width space **เฉพาะระหว่างโทเค็นที่ท้ายตัวหน้าและต้นตัวหลังเป็นอักษรไทยทั้งคู่** (ไม่ตัดใน URL คำละติน ตัวเลข ไม่ติดช่องว่าง/word joiner/NBSP และไม่ให้ "(" ค้างท้ายบรรทัด)
 - `--keep-together`: แทนสตริงด้วยอักขระ private-use ก่อนตัดคำ แล้วคืนเป็น NBSP แทนช่องว่าง + word joiner หน้า "." เท่านั้น **ห้ามแทรก joiner ระหว่างทุกอักขระ** เพราะทำให้เครื่องหมายผสม (พินทุ สระบน/ล่าง) หลุดจากพยัญชนะ
 - `--fit-tables`: แก้เฉพาะ `tblGrid`/`tcW` ไม่แตะรัน (รันที่มีภาพจะหายถ้าตั้ง `run.text`) ผลกริดต้องเท่า `fit_tables.py` รุ่นต่อบทความเดิม
+- frontmatter `email_line:` พิมพ์บรรทัดอีเมลตามตัวอักษร (แทน `email:` ที่พิมพ์ "*Corresponding Author E-mail:") เพราะแม่แบบแต่ละวารสารเขียนบรรทัดนี้ต่างกัน
 - ตัวเลือกส่วนหัว/ภาพ (`--author-size/--author-bold/--received/--figure-width-in/--source-align`) มีไว้แทนสคริปต์ postfix ต่อบทความ **ถ้าตัวเลือกไม่พอให้เพิ่มที่นี่** ไม่เขียนสคริปต์แก้ .docx ในโฟลเดอร์บทความ
 - ย่อหน้าที่ขึ้นต้นด้วย "ตารางที่ N"/"Table N" ถือเป็นชื่อตาราง (ประโยคนำตารางในเนื้อหาจึงกลายเป็นป้ายซ้อน) ยังไม่ได้แก้ บันทึกใน `review-lessons.md` ฌ ถ้าแก้ ให้นับเป็นชื่อตารางเฉพาะบรรทัดที่ติดก่อนตาราง
 

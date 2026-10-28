@@ -11,7 +11,7 @@
       "name": "research-article",
       "source": "./",
       "description": "Write Thai research and academic articles for TCI/ThaiJO journals, from topic selection to a journal-formatted .docx.",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "category": "writing"
     },
     {

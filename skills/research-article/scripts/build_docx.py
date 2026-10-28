@@ -176,7 +176,9 @@ class Builder:
             self.marked(self.para(WD_ALIGN_PARAGRAPH.LEFT), meta[f"authors_{lang}"], size, bold=True)
         for line in filter(None, (x.strip() for x in meta.get(f"affiliations_{lang}", "").split("|"))):
             self.marked(self.para(WD_ALIGN_PARAGRAPH.LEFT), line, size)
-        if meta.get("email"):
+        if meta.get("email_line"):
+            self.marked(self.para(WD_ALIGN_PARAGRAPH.LEFT), meta["email_line"], size)
+        elif meta.get("email"):
             self.run(self.para(WD_ALIGN_PARAGRAPH.LEFT), f"Email: {meta['email']}", size)
 
     def header(self, meta):
@@ -198,7 +200,9 @@ class Builder:
         for key in ("affiliations_th", "affiliations_en"):
             for line in filter(None, (x.strip() for x in meta.get(key, "").split("|"))):
                 self.marked(self.para(C), line, 14)
-        if meta.get("email"):
+        if meta.get("email_line"):  # printed verbatim: journals differ ("E-mail1: … E-mail2: …", "Corresponding author: …")
+            self.marked(self.para(C), meta["email_line"], 14)
+        elif meta.get("email"):
             p = self.para(C)
             self.run(p, "*", 14, sup=True)
             self.run(p, f"Corresponding Author E-mail: {meta['email']}", 14)
