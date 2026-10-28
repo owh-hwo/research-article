@@ -7,14 +7,15 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 | ส่วน | ไฟล์ | หมายเหตุ |
 |---|---|---|
 | ขั้นตอน | `skills/research-article/SKILL.md` | ขั้น 0-10 (โหมด → หัวข้อ → สัมภาษณ์ → เกณฑ์วารสาร → อ้างอิง → หลักธรรม → โครง → ร่าง → ภาพ → ปรับภาษา → ตรวจ → 9.5 จำลองผู้ทรงฯ → 10 .docx) |
-| คู่มือ | `skills/research-article/references/` | `review-lessons.md` บทเรียนจากการตรวจ หมวด ก-ญ (แก้บ่อยที่สุด); `peer-review.md` ขั้น 9.5 ฉบับเต็ม: บทบาท ไฟล์ร่วมของรอบ คำสั่งรอบ 1/N การเรียกขนานหลายบทความ ตารางตอบ เกณฑ์หยุด |
-| ผู้ตรวจ | `agents/article-reviewer.md`, `agents/article-editor.md` | subagent ของ Claude Code (หนึ่งผู้ทรงฯ ต่อ subagent; editor = ด่านแรก/ตรวจ PDF/รวมผล) tools: Read, Grep, Glob, Bash (`python -I` อ่าน PDF), Write (เฉพาะรายงานของตน) ปลั๊กอินค้นพบ `agents/` ที่รากอัตโนมัติ |
+| คู่มือ | `skills/research-article/references/` | `review-lessons.md` บทเรียนจากการตรวจ หมวด ก-ญ (แก้บ่อยที่สุด); `peer-review.md` ขั้น 9.5 ฉบับเต็ม: บทบาท ไฟล์ร่วมของรอบ คำสั่งรอบ 1/N การเรียกขนานหลายบทความ ตารางตอบ cross-review (ผู้ทรงฯ พิจารณารายงานของผู้ตรวจอีกระบบ แล้ว editor เลือกถ้อยคำสุดท้าย) เกณฑ์หยุด |
+| ผู้ตรวจ | `agents/article-reviewer.md`, `agents/article-editor.md` | subagent ของ Claude Code (หนึ่งผู้ทรงฯ ต่อ subagent; editor = ด่านแรก/ตรวจ PDF/รวมผล/รวมผล cross-review) tools: Read, Grep, Glob, Bash (`python -I` อ่าน PDF), Write (เฉพาะรายงานของตน) ปลั๊กอินค้นพบ `agents/` ที่รากอัตโนมัติ |
 | สคริปต์ | `skills/research-article/scripts/` | `tci_search.py`, `academic_search.py`, `topic_scan.py`, `check_citations.py`, `build_docx.py`, `check_linebreaks.py` (Python 3.9+, `python-docx`; `pythainlp` + `pypdfium2` สำหรับตัดคำ/ตรวจ PDF) |
-| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.3.1**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
+| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.3.2**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
 
 พฤติกรรมสคริปต์ที่ต้องรักษา:
 - `build_docx.py --thai-wordbreak` แทรก zero-width space ระหว่างคำไทย **ยกเว้นหลัง "(" และ "["** (ไม่ให้วงเล็บเปิดค้างท้ายบรรทัด)
 - `check_linebreaks.py` รายงานคำไทยที่ถูกตัดกลางคำ (เทียบขอบคำจากร่าง รวมกรณีท้ายคำเป็นคำอื่น เช่น "เส / นอก") และวงเล็บเปิดค้างท้ายบรรทัด; exit 0/1/2
+- `build_docx.py` ถือว่าย่อหน้าที่ขึ้นต้นด้วย "ตารางที่ N"/"Table N" เป็นชื่อตาราง (ประโยคนำตารางในเนื้อหาจึงกลายเป็นป้ายซ้อน) ยังไม่ได้แก้ บันทึกเป็นบทเรียนใน `review-lessons.md` หมวด ฌ ถ้าแก้ ให้นับเป็นชื่อตารางเฉพาะบรรทัดที่ติดก่อนตาราง
 - `check_citations.py` จับคู่ "และคณะ" ในเนื้อหากับรายการท้ายเรื่องที่ลงชื่อผู้แต่งครบไม่ได้ (ERROR เท็จ) ยังไม่ได้แก้
 
 ## thai-humanizer (สกิลคู่หู แยก repo)
@@ -31,7 +32,7 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 1. **ข้อมูลเฉพาะห้ามเข้า repo**: ชื่อบทความ หัวข้อ วารสารเป้าหมาย ชื่อผู้วิจัยในงานจริง เลขกฎหมาย path ส่วนตัว อีเมล ตัวอย่างต้องแต่งขึ้นหรือทำให้ทั่วไป (เคยหลุด: เลขกฎกระทรวง ชื่อผู้วิจัย ตัวอย่างภาษีเฉพาะเรื่อง)
 2. บทเรียนจากบทความจริงเขียนเป็นข้อทั่วไปตามหมวด ไม่ใส่ประวัติการแก้ของบทความใด
 3. ตัวอย่าง `build_docx.py` ใน SKILL.md ต้องเป็นค่าทั่วไป ถ้าเป็นค่าของวารสารใดต้องบอกว่าเป็นตัวอย่าง
-4. ขั้น 9.5 ใช้ **Claude subagent เท่านั้น** (ไม่แนะนำ CLI ภายนอกเป็นผู้ตรวจ) แก้กติกาผู้ตรวจที่ agent และ `peer-review.md` ให้สอดคล้องกัน
+4. ขั้น 9.5 ใช้ **Claude subagent เป็นผู้ตรวจหลัก** (สกิลไม่สั่งให้เรียก CLI ภายนอก) ถ้าผู้ใช้มีรายงานจากผู้ตรวจระบบอื่นอยู่แล้ว ใช้เป็นข้อมูลเข้าของ cross-review ได้ แก้กติกาผู้ตรวจที่ agent และ `peer-review.md` ให้สอดคล้องกัน
 5. เปลี่ยนพฤติกรรมแล้วเพิ่ม `version` ให้ตรงกันทั้ง `plugin.json` และรายการ research-article ใน `marketplace.json`
 6. แก้สคริปต์ที่สร้าง/ตรวจ .docx ให้ทดสอบกับบทความจริงใน `../บทความ/articles/` (Word COM นับหน้าเทียบก่อน-หลัง) เพราะการเปลี่ยนจุดตัดบรรทัดเปลี่ยนจำนวนหน้าได้หลายหน้า
 
@@ -63,5 +64,6 @@ rm -rf "$CLAUDE_CONFIG_DIR"
 - ติดตั้งแบบสำเนา: `cp -r skills/research-article ~/.claude/skills/` และ `cp agents/article-*.md ~/.claude/agents/` (แบบนี้ไม่ได้ dependency อัตโนมัติ thai-humanizer อยู่ที่ `~/.claude/skills/thai-humanizer/`) SKILL.md อ้าง agent ผ่าน `../../agents/` ซึ่งชี้ไป `~/.claude/agents/` พอดี
 - เทียบสำเนากับ repo: `diff -rq --strip-trailing-cr -x __pycache__ skills/research-article ~/.claude/skills/research-article`
 - agent ที่คัดลอกใหม่ใช้ได้เมื่อ session โหลดรายการ agent ใหม่ (เริ่ม session ใหม่ถ้ายังไม่เห็น)
+- เครื่องนี้ติดตั้งแบบปลั๊กอินด้วย จึงมีสองชุดชื่อซ้ำ (`research-article` กับ `research-article:research-article`, agent `article-*` กับ `research-article:article-*`) หลัง push ต้องอัปเดตทั้งสองชุด: คัดลอกตามข้อแรก แล้ว `claude plugin marketplace update research-article` + `claude plugin update research-article@research-article` และ `/reload-plugins` ตรวจปลั๊กอินด้วย `diff -rq --strip-trailing-cr -x __pycache__ skills/research-article ~/.claude/plugins/cache/research-article/research-article/<version>/skills/research-article`
 - เครื่องอื่นใช้ `/plugin marketplace update research-article` แล้ว `/reload-plugins`
 - โฟลเดอร์นี้อยู่ใน Google Drive พร้อม `.git` แก้จากเครื่องเดียว เครื่องอื่น clone แยก
