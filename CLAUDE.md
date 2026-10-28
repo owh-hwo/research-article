@@ -10,7 +10,7 @@ repo ของสกิล `research-article` (https://github.com/owh-hwo/resear
 | คู่มือ | `skills/research-article/references/` | `review-lessons.md` บทเรียนจากการตรวจ หมวด ก-ญ (แก้บ่อยที่สุด); `peer-review.md` ขั้น 9.5 ฉบับเต็ม: บทบาท ไฟล์ร่วมของรอบ คำสั่งรอบ 1/N การเรียกขนานหลายบทความ ตารางตอบ เกณฑ์หยุด |
 | ผู้ตรวจ | `agents/article-reviewer.md`, `agents/article-editor.md` | subagent ของ Claude Code (หนึ่งผู้ทรงฯ ต่อ subagent; editor = ด่านแรก/ตรวจ PDF/รวมผล) tools: Read, Grep, Glob, Bash (`python -I` อ่าน PDF), Write (เฉพาะรายงานของตน) ปลั๊กอินค้นพบ `agents/` ที่รากอัตโนมัติ |
 | สคริปต์ | `skills/research-article/scripts/` | `tci_search.py`, `academic_search.py`, `topic_scan.py`, `check_citations.py`, `build_docx.py`, `check_linebreaks.py` (Python 3.9+, `python-docx`; `pythainlp` + `pypdfium2` สำหรับตัดคำ/ตรวจ PDF) |
-| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.3.0**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
+| ปลั๊กอิน | `.claude-plugin/plugin.json`, `marketplace.json` | version ปัจจุบัน **1.3.1**; `"dependencies": ["thai-humanizer"]`; marketplace มีสองปลั๊กอิน research-article (`./`) และ thai-humanizer (source `url` HTTPS) |
 
 พฤติกรรมสคริปต์ที่ต้องรักษา:
 - `build_docx.py --thai-wordbreak` แทรก zero-width space ระหว่างคำไทย **ยกเว้นหลัง "(" และ "["** (ไม่ให้วงเล็บเปิดค้างท้ายบรรทัด)
